@@ -1,20 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { projects, type Project, type ProjectType } from "@/data/projects";
+import { sampleProjects, type Project, type ProjectType } from "@/data/projects";
 
 const filters: Array<"All" | ProjectType> = ["All", "Residential", "Commercial", "Mixed Use"];
 
 export default function Home() {
   const [active, setActive] = useState<"All" | ProjectType>("All");
-  const [selectedId, setSelectedId] = useState(projects[0]?.id ?? "");
+  const [selectedId, setSelectedId] = useState(sampleProjects[0]?.id ?? "");
 
   const visibleProjects = useMemo(
-    () => active === "All" ? projects : projects.filter((project) => project.type === active),
+    () => active === "All" ? sampleProjects : sampleProjects.filter((project) => project.type === active),
     [active]
   );
 
-  const selected = projects.find((project) => project.id === selectedId) ?? visibleProjects[0];
+  const selected = sampleProjects.find((project) => project.id === selectedId) ?? visibleProjects[0];
 
   return (
     <main className="app-shell">
@@ -39,7 +39,7 @@ export default function Home() {
               className={`filter ${active === filter ? "active" : ""}`}
               onClick={() => {
                 setActive(filter);
-                const next = filter === "All" ? projects[0] : projects.find((p) => p.type === filter);
+                const next = filter === "All" ? sampleProjects[0] : sampleProjects.find((p) => p.type === filter);
                 if (next) setSelectedId(next.id);
               }}
             >
@@ -69,7 +69,6 @@ export default function Home() {
           <p className="eyebrow">Pune development map</p>
           <h1 className="hero-title">See what&apos;s being built around you.</h1>
           <p className="hero-copy">Explore residential, commercial and mixed-use developments across Pune — from the first foundation to completed spaces.</p>
-
           {selected && <ProjectCard project={selected} />}
         </aside>
 
