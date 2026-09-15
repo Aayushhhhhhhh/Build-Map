@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import * as mapboxgl from "mapbox-gl/esm";
+import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import "./BuildMapMap.css";
+import { useEffect, useRef } from "react";
 import type { Project } from "@/data/projects";
 
 type Props = {
@@ -18,17 +19,15 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
 
   useEffect(() => {
     if (!containerRef.current) return;
-
     const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!token) return;
 
+    mapboxgl.accessToken = token;
     const map = new mapboxgl.Map({
-      accessToken: token,
       container: containerRef.current,
       style: "mapbox://styles/mapbox/dark-v11",
       center: [73.8567, 18.5204],
       zoom: 10.6,
-      pitch: 0,
       attributionControl: false,
     });
 
@@ -47,8 +46,8 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-
     markersRef.current.forEach((marker) => marker.remove());
+
     markersRef.current = projects.map((project) => {
       const el = document.createElement("button");
       el.type = "button";
@@ -56,27 +55,20 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
       el.innerHTML = `<span>${project.completionPercentage}%</span><i></i>`;
       el.setAttribute("aria-label", project.name);
       el.addEventListener("click", () => onSelect(project.id));
-
-      const marker = new mapboxgl.Marker({ element: el, anchor: "center" })
+      return new mapboxgl.Marker({ element: el, anchor: "center" })
         .setLngLat([project.longitude, project.latitude])
         .addTo(map);
-      return marker;
     });
 
-    return () => {
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
-    };
+    return () => markersRef.current.forEach((marker) => marker.remove());
   }, [projects, selectedId, onSelect]);
-
-  const hasToken = Boolean(process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
 
   return (
     <div ref={containerRef} className="real-map" aria-label="Interactive Pune map">
-      {!hasToken && (
+      {!process.env.NEXT_PUBLIC_MAPBOX_TOKEN && (
         <div className="map-token-message">
-          <strong>Connect the live map</strong>
-          <span>Add <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> in Vercel.</span>
+          <strong>Live Pune map is ready</strong>
+          <span>Add <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> in Vercel to activate it.</span>
         </div>
       )}
     </div>
