@@ -66,3 +66,77 @@ button { cursor: pointer; }
 
 @media (min-width: 761px) { .map-screen { min-height: 760px; max-width: 1280px; margin: 0 auto; border-radius: 0; } .project-sheet { left: 24px; right: auto; width: 390px; bottom: 28px; } .bottom-nav { display: none; } .map-search-row { left: 50%; right: auto; width: min(540px, 48vw); transform: translateX(-50%); } .map-chips { left: 50%; right: auto; transform: translateX(-50%); width: min-content; } }
 @media (max-width:760px) { .map-screen{min-height:100svh}.detail-shell{padding:18px 16px 50px}.detail-nav{grid-template-columns:1fr auto;gap:12px;padding-bottom:30px}.detail-nav .brand{grid-column:1/-1;grid-row:1;justify-self:start}.back-link{grid-column:1;grid-row:2}.demo-badge{grid-column:2;grid-row:2}.detail-hero,.detail-grid{grid-template-columns:1fr;gap:32px}.detail-hero{padding:35px 0 40px}.detail-hero h1{font-size:52px}.detail-lede{font-size:14px}.timeline{grid-template-columns:repeat(3,1fr);row-gap:25px;margin-bottom:48px}.detail-grid{padding-top:40px}.info-card{position:static}.inventory-row{grid-template-columns:1fr 1fr;gap:8px}.inventory-row span:nth-child(3){display:none}.inventory-row strong{text-align:left}.map-place{font-size:10px}.place-pune{font-size:18px}.map-side-control{display:none}.locate-button{bottom:205px}.project-sheet{bottom:76px}.header-actions .circle-action{width:40px;height:40px}.map-brand{font-size:17px;padding:9px 13px}.city-switcher{display:none}.explore-prompt{top:188px}.map-search-row{top:75px}.map-chips{top:131px} }
+
+
+/* BuildMap long-life design foundation */
+:root {
+  --bm-brand: #173F35;
+  --bm-accent: #FF7F73;
+  --bm-bg: #F7F7F3;
+  --bm-surface: #FFFFFF;
+  --bm-text: #17201D;
+  --bm-muted: #66716D;
+  --bm-soft: #98A19D;
+  --bm-border: #E4E7E3;
+  --bm-map: #101817;
+  --bm-upcoming: #D99A32;
+  --bm-under-construction: #FF7F73;
+  --bm-ready: #5D8FE8;
+  --bm-completed: #3E8B68;
+  --bm-radius-sm: 8px;
+  --bm-radius-md: 14px;
+  --bm-radius-lg: 20px;
+  --bm-radius-pill: 999px;
+  --bm-space-1: 4px;
+  --bm-space-2: 8px;
+  --bm-space-3: 12px;
+  --bm-space-4: 16px;
+  --bm-space-5: 24px;
+  --bm-space-6: 32px;
+  --bm-space-7: 48px;
+  --bm-space-8: 64px;
+}
+
+@media (min-width: 761px) {
+  .map-screen {
+    min-height: 100vh;
+    background: var(--bm-map);
+  }
+}
+
+/* Future-proof map UI: layers and source/verification primitives */
+.map-layers-button {
+  position: absolute;
+  z-index: 9;
+  right: 20px;
+  bottom: 320px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--bm-radius-md);
+  padding: 11px 14px;
+  background: rgba(17,18,23,.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 9px 25px rgba(0,0,0,.24);
+}
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--bm-border);
+  border-radius: var(--bm-radius-pill);
+  padding: 5px 8px;
+  background: var(--bm-surface);
+  color: var(--bm-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; }
+.status-upcoming { background: var(--bm-upcoming); }
+.status-under-construction { background: var(--bm-under-construction); }
+.status-ready { background: var(--bm-ready); }
+.status-completed { background: var(--bm-completed); }
+
+@media (max-width: 760px) {
+  .map-layers-button { right: 16px; bottom: 270px; }
+}
