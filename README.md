@@ -12,6 +12,6 @@ A map-first real-estate discovery platform for Pune.
 - Source/verification labels for trust
 
 ## Planned stack
-Next.js + TypeScript · Supabase/PostgreSQL · Mapbox · Vercel
+Next.js + TypeScript · Leaflet + OpenStreetMap · Supabase/PostgreSQL · Vercel
 
 Current project phase: build the first polished UI with sample data, then connect verified project data.
