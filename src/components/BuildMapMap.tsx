@@ -20,7 +20,6 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
       zoomControl: true,
       attributionControl: true,
       preferCanvas: true,
-      zoomControlPosition: "bottomright",
     }).setView([18.5204, 73.8567], 11);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
