@@ -38,6 +38,7 @@ export default function Home() {
         </div>
       )}
 
+      <div className="homepage-ui-layer">
       <header className="sketch-header">
         <Link href="/" className="sketch-brand">BuildMap</Link>
 
@@ -70,6 +71,7 @@ export default function Home() {
       <div className="map-zoom">
         <button aria-label="Zoom in">+</button>
         <button aria-label="Zoom out">−</button>
+      </div>
       </div>
     </main>
   );
