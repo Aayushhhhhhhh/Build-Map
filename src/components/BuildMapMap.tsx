@@ -64,11 +64,12 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
   }, [projects, selectedId, onSelect]);
 
   return (
-    <div ref={containerRef} className="real-map" aria-label="Interactive Pune map">
+    <div ref={containerRef} className={`real-map ${!process.env.NEXT_PUBLIC_MAPBOX_TOKEN ? "map-preview" : ""}`} aria-label="Interactive Pune map">
       {!process.env.NEXT_PUBLIC_MAPBOX_TOKEN && (
-        <div className="map-token-message">
-          <strong>Live Pune map is ready</strong>
-          <span>Add <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> in Vercel to activate it.</span>
+        <div className="map-preview-art" aria-hidden="true">
+          <span className="road r1" /><span className="road r2" /><span className="road r3" /><span className="road r4" />
+          <span className="river" />
+          <b className="map-label l-pune">PUNE</b><b className="map-label l-baner">BANER</b><b className="map-label l-wakad">WAKAD</b><b className="map-label l-kharadi">KHARADI</b><b className="map-label l-hadapsar">HADAPSAR</b>
         </div>
       )}
     </div>
