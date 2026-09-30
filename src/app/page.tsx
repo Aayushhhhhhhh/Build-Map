@@ -39,39 +39,39 @@ export default function Home() {
       )}
 
       <div className="homepage-ui-layer">
-      <header className="sketch-header">
-        <Link href="/" className="sketch-brand">BuildMap</Link>
+        <header className="sketch-header">
+          <Link href="/" className="sketch-brand">BuildMap</Link>
 
-        <div className="sketch-actions">
-          <label className="location-search">
-            <span>⌕</span>
-            <input
-              aria-label="Search location"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search location"
-            />
-          </label>
+          <div className="sketch-actions">
+            <label className="location-search">
+              <span>⌕</span>
+              <input
+                aria-label="Search location"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search location"
+              />
+            </label>
 
-          <select className="type-select" value={type} onChange={(event) => setType(event.target.value as "All" | ProjectType)} aria-label="Property type">
-            {projectTypes.map((item) => <option key={item} value={item}>{item === "All" ? "Type" : item}</option>)}
-          </select>
+            <select className="type-select" value={type} onChange={(event) => setType(event.target.value as "All" | ProjectType)} aria-label="Property type">
+              {projectTypes.map((item) => <option key={item} value={item}>{item === "All" ? "Type" : item}</option>)}
+            </select>
 
-          <div className="view-toggle" aria-label="Map or grid view">
-            <button className={view === "map" ? "selected" : ""} onClick={() => setView("map")}>Map</button>
-            <button className={view === "grid" ? "selected" : ""} onClick={() => setView("grid")}>Grid</button>
+            <div className="view-toggle" aria-label="Map or grid view">
+              <button className={view === "map" ? "selected" : ""} onClick={() => setView("map")}>Map</button>
+              <button className={view === "grid" ? "selected" : ""} onClick={() => setView("grid")}>Grid</button>
+            </div>
+
+            <Link className="list-property" href="#list-property">List your properties</Link>
+            <Link className="sign-in" href="#sign-in">Sign in</Link>
           </div>
+        </header>
+        <div className="result-count">{visibleProjects.length >= 1000 ? visibleProjects.length : "1,000+"} Results</div>
 
-          <Link className="list-property" href="#list-property">List your properties</Link>
-          <Link className="sign-in" href="#sign-in">Sign in</Link>
+        <div className="map-zoom">
+          <button aria-label="Zoom in" onClick={() => window.dispatchEvent(new Event("buildmap:zoom-in"))}>+</button>
+          <button aria-label="Zoom out" onClick={() => window.dispatchEvent(new Event("buildmap:zoom-out"))}>−</button>
         </div>
-      </header>
-      <div className="result-count">{visibleProjects.length >= 1000 ? visibleProjects.length : "1,000+"} Results</div>
-
-      <div className="map-zoom">
-        <button aria-label="Zoom in">+</button>
-        <button aria-label="Zoom out">−</button>
-      </div>
       </div>
     </main>
   );
