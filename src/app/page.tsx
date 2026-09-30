@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import BuildMapMap from "@/components/BuildMapMap";
+
+const BuildMapMap = dynamic(() => import("@/components/BuildMapMap"), { ssr: false });
 import { sampleProjects, type ProjectType } from "@/data/projects";
 
 const projectTypes: Array<"All" | ProjectType> = ["All", "Residential", "Commercial", "Mixed Use"];
