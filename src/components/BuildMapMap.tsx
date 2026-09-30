@@ -29,6 +29,11 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
 
     mapRef.current = map;
 
+    const zoomIn = () => map.zoomIn();
+    const zoomOut = () => map.zoomOut();
+    window.addEventListener("buildmap:zoom-in", zoomIn);
+    window.addEventListener("buildmap:zoom-out", zoomOut);
+
     const resize = () => map.invalidateSize();
     window.requestAnimationFrame(resize);
     const timeout = window.setTimeout(resize, 300);
@@ -37,6 +42,8 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
     return () => {
       window.clearTimeout(timeout);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("buildmap:zoom-in", zoomIn);
+      window.removeEventListener("buildmap:zoom-out", zoomOut);
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
       map.remove();
