@@ -63,15 +63,6 @@ export default function Home() {
           <Link className="sign-in" href="#sign-in">Sign in</Link>
         </div>
       </header>
-
-      {view === "map" && selected && (
-        <button className="map-project-popover" onClick={() => window.location.assign(`/projects/${selected.id}`)}>
-          <span>{selected.locality}</span>
-          <strong>{selected.name}</strong>
-          <small>{selected.type} · {selected.status} · {selected.completionPercentage}% built</small>
-        </button>
-      )}
-
       <div className="result-count">{visibleProjects.length >= 1000 ? visibleProjects.length : "1,000+"} Results</div>
 
       <div className="map-zoom">
