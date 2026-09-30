@@ -127,3 +127,13 @@ a{text-decoration:none;color:inherit}
 .grid-view-backdrop{background:#f7f7f3}
 @media(max-width:900px){.sketch-header{left:12px;right:12px}.location-search{width:190px}}
 @media(max-width:650px){.sketch-header{height:auto;padding:8px 9px;background:rgba(255,255,255,.97)}.sketch-brand{padding-top:5px;color:#17201d}.location-search{width:auto}.type-select,.view-toggle,.sign-in{height:36px}.result-count{left:12px;bottom:12px}.map-zoom{right:12px;bottom:12px}}
+
+/* Hard UI layer: Leaflet must always stay behind homepage controls. */
+.buildmap-sketch-home{isolation:isolate}
+.homepage-ui-layer{position:absolute;inset:0;z-index:9999;pointer-events:none}
+.homepage-ui-layer .sketch-header,
+.homepage-ui-layer .result-count,
+.homepage-ui-layer .map-zoom{pointer-events:auto}
+.homepage-ui-layer .sketch-header{z-index:10000}
+.homepage-ui-layer .result-count{z-index:10001}
+.homepage-ui-layer .map-zoom{z-index:10001}
