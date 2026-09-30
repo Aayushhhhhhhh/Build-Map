@@ -108,3 +108,22 @@ a{text-decoration:none;color:inherit}
 @media(max-width:650px){
  .buildmap-sketch-home{min-height:100svh}.sketch-header{align-items:flex-start}.sketch-brand{padding-top:10px}.sketch-actions{flex:1;display:grid;grid-template-columns:1fr auto;gap:6px}.location-search{width:auto;grid-column:1/-1}.type-select{width:100%;min-width:0}.view-toggle{width:max-content}.view-toggle button{min-width:42px}.sign-in{padding:0 10px}.result-count{left:14px;bottom:16px}.map-zoom{right:14px;bottom:16px}.map-project-popover{left:14px;right:14px;bottom:72px;transform:none;min-width:0}.grid-view-backdrop{padding:150px 14px 24px}.grid-view-inner{grid-template-columns:1fr}
 }
+
+
+/* BuildMap homepage — reference-led light map interface */
+.buildmap-sketch-home{background:#eef1ed;color:#17201d}
+.buildmap-sketch-home:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.06),transparent 28%)}
+.sketch-header{top:16px;left:22px;right:22px;height:58px;padding:8px 10px 8px 16px;border:1px solid #e1e5e1;border-radius:12px;background:rgba(255,255,255,.97);box-shadow:0 6px 22px rgba(25,42,34,.12);backdrop-filter:blur(14px)}
+.sketch-brand{color:#17201d;font-size:19px;font-weight:750;letter-spacing:-.045em}
+.sketch-actions{gap:8px}
+.location-search,.type-select,.view-toggle,.list-property,.sign-in{height:38px;background:#fff;border:1px solid #dfe3df;color:#26312d;box-shadow:none}
+.location-search{width:245px;border-radius:8px}.location-search span{color:#7d8883}.location-search input{color:#26312d}.location-search input::placeholder{color:#9aa39f}
+.type-select{min-width:112px;border-radius:8px;color:#38433f}
+.view-toggle{border-radius:999px;padding:2px;overflow:hidden}.view-toggle button{height:32px;min-width:49px;border-radius:999px;color:#6e7874;border:0}.view-toggle button.selected{background:#17201d;color:#fff}
+.list-property{padding:0 14px;border-radius:8px;color:#ef5f42;font-weight:700}.sign-in{padding:0 14px;border-radius:8px;color:#17201d;background:#fff;font-weight:600}
+.result-count{left:22px;bottom:22px;border-color:#e0e4df;background:rgba(255,255,255,.96);color:#303b36;box-shadow:0 5px 18px rgba(25,42,34,.12)}
+.map-zoom{right:22px;bottom:22px;border-color:#dfe4df;background:rgba(255,255,255,.96);box-shadow:0 5px 18px rgba(25,42,34,.12)}
+.map-zoom button{color:#27332e;border-color:#e4e8e4}
+.grid-view-backdrop{background:#f7f7f3}
+@media(max-width:900px){.sketch-header{left:12px;right:12px}.location-search{width:190px}}
+@media(max-width:650px){.sketch-header{height:auto;padding:8px 9px;background:rgba(255,255,255,.97)}.sketch-brand{padding-top:5px;color:#17201d}.location-search{width:auto}.type-select,.view-toggle,.sign-in{height:36px}.result-count{left:12px;bottom:12px}.map-zoom{right:12px;bottom:12px}}
