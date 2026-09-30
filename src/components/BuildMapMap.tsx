@@ -25,7 +25,7 @@ export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
     mapboxgl.accessToken = token;
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/dark-v11",
+      style: "mapbox://styles/mapbox/light-v11",
       center: [73.8567, 18.5204],
       zoom: 10.6,
       attributionControl: false,
