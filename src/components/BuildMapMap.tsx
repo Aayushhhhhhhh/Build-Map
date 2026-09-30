@@ -1,77 +1,47 @@
 "use client";
 
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import "leaflet/dist/leaflet.css";
 import "./BuildMapMap.css";
+import L from "leaflet";
 import { useEffect, useRef } from "react";
 import type { Project } from "@/data/projects";
 
-type Props = {
-  projects: Project[];
-  selectedId: string;
-  onSelect: (id: string) => void;
-};
+type Props = { projects: Project[]; selectedId: string; onSelect: (id: string) => void };
 
 export default function BuildMapMap({ projects, selectedId, onSelect }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-    if (!token) return;
-
-    mapboxgl.accessToken = token;
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: "mapbox://styles/mapbox/light-v11",
-      center: [73.8567, 18.5204],
-      zoom: 10.6,
-      attributionControl: false,
-    });
-
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
-    map.addControl(new mapboxgl.AttributionControl({ compact: true }), "bottom-left");
+    if (!containerRef.current || mapRef.current) return;
+    const map = L.map(containerRef.current, { zoomControl: true, attributionControl: true }).setView([18.5204, 73.8567], 11);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
     mapRef.current = map;
-
-    return () => {
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
-      map.remove();
-      mapRef.current = null;
-    };
+    return () => { map.remove(); mapRef.current = null; };
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    markersRef.current.forEach((marker) => marker.remove());
-
+    markersRef.current.forEach((m) => m.remove());
     markersRef.current = projects.map((project) => {
-      const el = document.createElement("button");
+      const el = L.DomUtil.create("button", "buildmap-marker");
       el.type = "button";
-      el.className = `buildmap-marker ${project.id === selectedId ? "is-selected" : ""}`;
       el.innerHTML = `<span>${project.completionPercentage}%</span><i></i>`;
       el.setAttribute("aria-label", project.name);
+      if (project.id === selectedId) el.classList.add("is-selected");
       el.addEventListener("click", () => onSelect(project.id));
-      return new mapboxgl.Marker({ element: el, anchor: "center" })
-        .setLngLat([project.longitude, project.latitude])
-        .addTo(map);
+      const marker = L.marker([project.latitude, project.longitude], { icon: L.divIcon({ className: "", html: el.outerHTML, iconSize: [46,46], iconAnchor: [23,23] }), riseOnHover: true });
+      marker.addTo(map);
+      marker.on("click", () => onSelect(project.id));
+      return marker;
     });
-
-    return () => markersRef.current.forEach((marker) => marker.remove());
+    return () => markersRef.current.forEach((m) => m.remove());
   }, [projects, selectedId, onSelect]);
 
-  return (
-    <div ref={containerRef} className={`real-map ${!process.env.NEXT_PUBLIC_MAPBOX_TOKEN ? "map-preview" : ""}`} aria-label="Interactive Pune map">
-      {!process.env.NEXT_PUBLIC_MAPBOX_TOKEN && (
-        <div className="map-preview-art" aria-hidden="true">
-          <span className="road r1" /><span className="road r2" /><span className="road r3" /><span className="road r4" />
-          <span className="river" />
-          <b className="map-label l-pune">PUNE</b><b className="map-label l-baner">BANER</b><b className="map-label l-wakad">WAKAD</b><b className="map-label l-kharadi">KHARADI</b><b className="map-label l-hadapsar">HADAPSAR</b>
-        </div>
-      )}
-    </div>
-  );
+  return <div ref={containerRef} className="real-map" aria-label="Interactive Pune map" />;
 }
