@@ -1,102 +1,131 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import BuildMapMap from "@/components/BuildMapMap";
 import { sampleProjects, type Project, type ProjectType } from "@/data/projects";
 
-const filters: Array<"All" | ProjectType> = ["All", "Residential", "Commercial", "Mixed Use"];
+const typeFilters: Array<"All" | ProjectType> = ["All", "Residential", "Commercial", "Mixed Use"];
+const statusFilters = ["All status", "Upcoming", "Under Construction", "Ready", "Completed"] as const;
 
 export default function Home() {
-  const [active, setActive] = useState<"All" | ProjectType>("All");
-  const [selectedId, setSelectedId] = useState(sampleProjects[0]?.id ?? "");
-  const [showList, setShowList] = useState(false);
+  const [type, setType] = useState<"All" | ProjectType>("All");
+  const [status, setStatus] = useState<(typeof statusFilters)[number]>("All status");
   const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState(sampleProjects[0]?.id ?? "");
+  const [showProjects, setShowProjects] = useState(false);
 
   const visibleProjects = useMemo(() => {
-    const filtered = active === "All" ? sampleProjects : sampleProjects.filter((project) => project.type === active);
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return filtered;
-    return filtered.filter((project) => `${project.name} ${project.locality} ${project.reraNumber}`.toLowerCase().includes(normalized));
-  }, [active, query]);
+    const q = query.trim().toLowerCase();
+    return sampleProjects.filter((project) => {
+      const matchesType = type === "All" || project.type === type;
+      const matchesStatus = status === "All status" || project.status === status;
+      const matchesQuery = !q || `${project.name} ${project.locality} ${project.reraNumber}`.toLowerCase().includes(q);
+      return matchesType && matchesStatus && matchesQuery;
+    });
+  }, [query, status, type]);
 
-  const selected = sampleProjects.find((project) => project.id === selectedId) ?? visibleProjects[0];
-  const selectProject = useCallback((id: string) => setSelectedId(id), []);
+  const selected = visibleProjects.find((p) => p.id === selectedId) ?? visibleProjects[0];
 
   return (
-    <main className="map-app">
-      <section className="map-screen" aria-label="BuildMap Pune development map">
-        <BuildMapMap projects={visibleProjects} selectedId={selected?.id ?? ""} onSelect={selectProject} />
-        <div className="map-vignette" />
+    <main className="buildmap-home">
+      <BuildMapMap projects={visibleProjects} selectedId={selected?.id ?? ""} onSelect={setSelectedId} />
 
-        <header className="map-header">
-          <div className="map-brand"><span className="brand-mark" />BuildMap</div>
-          <button className="city-switcher">Pune <span>⌄</span></button>
-          <div className="header-actions">
-            <button className="circle-action" aria-label="Saved projects">♡</button>
-            <button className="circle-action" aria-label="Notifications">♧</button>
-          </div>
-        </header>
+      <header className="home-header">
+        <Link href="/" className="home-brand" aria-label="BuildMap home">
+          <span className="home-brand-mark"><i /></span>
+          <span>BuildMap</span>
+        </Link>
 
-        <div className="map-search-row">
-          <label className="map-search">
-            <span>⌕</span>
-            <input aria-label="Search Pune" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search projects, areas or RERA" />
-          </label>
-          <button className="filter-button" aria-label="Open filters">☷</button>
+        <nav className="desktop-nav">
+          <a className="nav-active" href="#explore">Explore</a>
+          <a href="#projects">Projects</a>
+          <a href="#areas">Areas</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div className="header-right">
+          <button className="city-pill">Pune <span>⌄</span></button>
+          <button className="header-icon" aria-label="Saved">♡</button>
+          <button className="header-profile" aria-label="Profile">A</button>
         </div>
+      </header>
 
-        <div className="map-chips" aria-label="Project filters">
-          {filters.map((filter) => (
-            <button key={filter} className={`map-chip ${active === filter ? "active" : ""}`} onClick={() => {
-              setActive(filter);
-              const next = filter === "All" ? sampleProjects[0] : sampleProjects.find((p) => p.type === filter);
-              if (next) setSelectedId(next.id);
-            }}>{filter}</button>
+      <section className="home-search-wrap" aria-label="Search">
+        <div className="home-search">
+          <span className="search-icon">⌕</span>
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search projects, areas or RERA number" />
+          <kbd>⌘ K</kbd>
+        </div>
+      </section>
+
+      <section className="filter-bar" aria-label="Filters">
+        <div className="filter-group">
+          {typeFilters.map((item) => (
+            <button key={item} className={type === item ? "filter-chip active" : "filter-chip"} onClick={() => setType(item)}>
+              {item}
+            </button>
           ))}
         </div>
-
-        <div className="explore-prompt">⌖ &nbsp; Zoom in to explore Pune</div>
-
-        <div className={`project-sheet ${showList ? "expanded" : ""}`}>
-          <div className="sheet-handle" />
-          <div className="sheet-heading">
-            <div><span className="sheet-kicker">Pune · Development map</span><h1>{visibleProjects.length} developments</h1></div>
-            <button className="list-toggle" onClick={() => setShowList(!showList)}>{showList ? "Map" : "See list"}</button>
-          </div>
-
-          {selected && <ProjectPreview project={selected} />}
-
-          {showList && <div className="project-list">
-            {visibleProjects.map((project) => (
-              <button className={`list-item ${project.id === selected?.id ? "current" : ""}`} key={project.id} onClick={() => setSelectedId(project.id)}>
-                <span className="list-dot" />
-                <span><strong>{project.name}</strong><small>{project.locality} · {project.type} · {project.completionPercentage}% built</small></span>
-                <b>›</b>
-              </button>
-            ))}
-          </div>}
-        </div>
-
-        <nav className="bottom-nav" aria-label="Primary navigation">
-          <button className="nav-item active"><span>▥</span><small>Explore</small></button>
-          <button className="nav-item"><span>⌁</span><small>Projects</small></button>
-          <button className="nav-item"><span>◌</span><small>Saved</small></button>
-          <button className="nav-item"><span>◉</span><small>Profile</small></button>
-        </nav>
+        <select className="status-select" value={status} onChange={(e) => setStatus(e.target.value as typeof status)}>
+          {statusFilters.map((item) => <option key={item}>{item}</option>)}
+        </select>
+        <button className="more-filter" onClick={() => setShowProjects(!showProjects)}>☷ <span>Filters</span></button>
       </section>
+
+      <div className="map-copy">
+        <span>REAL ESTATE · PUNE</span>
+        <h1>See where the city<br />is being built.</h1>
+        <p>Explore developments, construction progress and properties available across Pune.</p>
+      </div>
+
+      <div className="map-controls">
+        <button aria-label="Zoom in">+</button>
+        <button aria-label="Zoom out">−</button>
+        <button aria-label="Locate">⌖</button>
+      </div>
+
+      {showProjects && (
+        <aside className="quick-filter-panel">
+          <div><span>Explore Pune</span><button onClick={() => setShowProjects(false)}>×</button></div>
+          <p>Filter the developments shown on the map.</p>
+          <label><span>Project type</span><strong>{type}</strong></label>
+          <label><span>Status</span><strong>{status}</strong></label>
+          <small>{visibleProjects.length} matching developments</small>
+        </aside>
+      )}
+
+      {selected && (
+        <section className="map-project-card">
+          <div className="card-accent" />
+          <div className="card-top">
+            <div>
+              <span className="eyebrow">{selected.locality} · {selected.type}</span>
+              <h2>{selected.name}</h2>
+            </div>
+            <span className="status-pill"><i />{selected.status}</span>
+          </div>
+          <div className="card-metrics">
+            <div><small>CONSTRUCTION</small><strong>{selected.completionPercentage}%</strong></div>
+            <div><small>COMPLETION</small><strong>{selected.expectedCompletion}</strong></div>
+            <div><small>PRICE FROM</small><strong>{selected.priceFrom}</strong></div>
+          </div>
+          <div className="progress-track"><span style={{ width: `${selected.completionPercentage}%` }} /></div>
+          <div className="card-footer">
+            <span>RERA · {selected.reraNumber}</span>
+            <Link href={`/projects/${selected.id}`}>View project <b>→</b></Link>
+          </div>
+        </section>
+      )}
+
+      <div className="map-count">{visibleProjects.length} developments on map</div>
+
+      <nav className="mobile-bottom-nav">
+        <a className="active" href="#explore"><span>⌖</span>Explore</a>
+        <a href="#projects"><span>▤</span>Projects</a>
+        <a href="#areas"><span>◫</span>Areas</a>
+        <a href="#saved"><span>♡</span>Saved</a>
+      </nav>
     </main>
   );
-}
-
-function ProjectPreview({ project }: { project: Project }) {
-  return <div className="preview-card">
-    <div className="preview-icon">{project.type === "Commercial" ? "▦" : project.type === "Mixed Use" ? "⌂" : "▥"}</div>
-    <div className="preview-content">
-      <div className="preview-topline"><span>{project.locality}</span><em>{project.completionPercentage}% built</em></div>
-      <h2>{project.name}</h2>
-      <p>{project.type} · {project.status}</p>
-      <div className="preview-bottom"><strong>{project.priceFrom} — {project.priceTo}</strong><Link href={`/projects/${project.id}`}>View project <span>→</span></Link></div>
-    </div>
-  </div>;
 }
